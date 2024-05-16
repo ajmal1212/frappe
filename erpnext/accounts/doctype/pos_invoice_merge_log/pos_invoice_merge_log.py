@@ -131,6 +131,7 @@ class POSInvoiceMergeLog(Document):
 		pos_invoice_docs = [frappe.get_cached_doc("POS Invoice", d.pos_invoice) for d in self.pos_invoices]
 
 		self.update_pos_invoices(pos_invoice_docs)
+		self.serial_and_batch_bundle_reference_for_pos_invoice()
 		self.cancel_linked_invoices()
 
 	def process_merging_into_sales_invoice(self, data):
@@ -311,6 +312,12 @@ class POSInvoiceMergeLog(Document):
 			)
 			doc.set_status(update=True)
 			doc.save()
+
+	def serial_and_batch_bundle_reference_for_pos_invoice(self):
+		for d in self.pos_invoices:
+			pos_invoice = frappe.get_doc("POS Invoice", d.pos_invoice)
+			for table_name in ["items", "packed_items"]:
+				pos_invoice.set_serial_and_batch_bundle(table_name)
 
 	def cancel_linked_invoices(self):
 		for si_name in [self.consolidated_invoice, self.consolidated_credit_note]:
