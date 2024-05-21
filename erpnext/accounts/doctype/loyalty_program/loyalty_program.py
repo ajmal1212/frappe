@@ -86,7 +86,6 @@ def get_loyalty_program_details_with_points(
 	tier_spent_level = sorted(
 		[d.as_dict() for d in loyalty_program.collection_rules],
 		key=lambda rule: rule.min_spent,
-		reverse=True,
 	)
 	for i, d in enumerate(tier_spent_level):
 		if i == 0 or (lp_details.total_spent + current_transaction_amount) >= d.min_spent:
