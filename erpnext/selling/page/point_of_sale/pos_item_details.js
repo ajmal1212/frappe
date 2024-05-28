@@ -403,6 +403,7 @@ erpnext.PointOfSale.ItemDetails = class {
 					frappe.model.set_value(item_row.doctype, item_row.name, {
 						serial_and_batch_bundle: r.name,
 						qty: Math.abs(r.total_qty),
+						use_serial_batch_fields: 0,
 					});
 				}
 			});

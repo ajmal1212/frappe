@@ -78,6 +78,7 @@ class StockController(AccountsController):
 				.select(SLE.voucher_type, SLE.voucher_no, SLE.serial_and_batch_bundle)
 				.where(
 					(SLE.docstatus == 1)
+					& (SLE.is_cancelled == 0)
 					& (SLE.serial_and_batch_bundle.notnull())
 					& (SLE.serial_and_batch_bundle.isin(sbb_list))
 				)
@@ -577,9 +578,6 @@ class StockController(AccountsController):
 
 				if row.serial_and_batch_bundle:
 					update_values["serial_and_batch_bundle"] = None
-					frappe.db.set_value(
-						"Serial and Batch Bundle", row.serial_and_batch_bundle, {"is_cancelled": 1}
-					)
 
 				if update_values:
 					row.db_set(update_values)
