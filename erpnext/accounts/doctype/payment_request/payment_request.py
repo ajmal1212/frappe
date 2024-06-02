@@ -194,9 +194,13 @@ class PaymentRequest(Document):
 		else:
 			address = {}
 		ref_doc = frappe.get_doc(self.reference_doctype, self.reference_name)
-		lpm, lpp = party.get("loyalty_program"), ref_doc.get("loyalty_points")
-		if lpm and lpp:
-			loyalty_points = [lpm, lpp]
+		lpm, lpp, lpa = (
+			party.get("loyalty_program"),
+			ref_doc.get("loyalty_points"),
+			ref_doc.get("loyalty_amount"),
+		)
+		if lpm and lpp and lpa:
+			loyalty_points = [lpm, lpp, lpa]
 		else:
 			loyalty_points = None
 		return frappe._dict(
@@ -208,7 +212,7 @@ class PaymentRequest(Document):
 				"payer_contact": contact,
 				"payer_address": address,
 				"loyalty_points": loyalty_points,
-				"discount_amount": ref_doc.get("loyalty_amount") or ref_doc.get("discount_amount"),
+				"discount_amount": ref_doc.get("discount_amount"),
 			}
 		)
 
